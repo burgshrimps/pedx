@@ -62,4 +62,10 @@ def main():
         logging.info('# Merge rephased 10X and filtered trio VCF')
         merge_trio_10X_vcf(options.tenx_rephased, trio_filtered, options.workdir)
 
+    elif options.sub == 'svhap':
+        logging.info('MODE: svhap')
+        logging.info('WORKDIR: {0}'.format(options.workdir))
+        logging.info('SV VCF: {0}'.format(options.sv))
+        logging.info('LONG READS BAM: {0}'.format(options.bam))
+
 main()

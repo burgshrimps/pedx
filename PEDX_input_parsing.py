@@ -67,5 +67,17 @@ def parse_arguments(arguments = sys.argv[1:]):
                                type=str,
                                help='Name of sample in VCF files.')
 
+    parser_svhap = subparsers.add_parser('svhap',
+                                           help='Phase structural variants called with SVIM.')
+    parser_svhap.add_argument('workdir',
+                               type=str,
+                               help='Working and output directory.')
+    parser_svhap.add_argument('sv',
+                               type=str,
+                               help='Structural variants called by SVIM in .vcf or .vcf.gz format.')
+    parser_svhap.add_argument('bam',
+                               type=str,
+                               help='Haplotagged long reads used to generate SV.vcf file.')
+
 
     return parser.parse_args(arguments)

@@ -58,7 +58,7 @@ def merge_trio_10X_vcf(tenx_rephased, trio_filtered, workdir):
     command_rm = ['rm', tenx_trio_merged_vcf]
     
     logging.info(' -> Merge 10X and trio VCF files to {0}'.format(tenx_trio_merged_vcf))
-    run(' '.join(command_merge), shell=True, check=True, executable='/bin/bash')
+    run(' '.join(command_merge), shell=True, check=False, executable='/bin/bash')
     
     logging.info(' -> Sort merged VCF file')
     run(' '.join(command_sort), shell=True, check=True, executable='/bin/bash')
