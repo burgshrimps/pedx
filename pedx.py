@@ -5,7 +5,7 @@ import sys
 from PEDX_input_parsing import parse_arguments, check_prerequisits
 from PEDX_index import create_index_positions
 from PEDX_rephase import compare_genotypes, write_rephased_tenx_vcf, postprocess_tenx_rephased_vcf
-from PEDX_integrate import filter_trio_vcf
+from PEDX_integrate import filter_trio_vcf, merge_trio_10X_vcf
 
 
 def main():
@@ -58,7 +58,8 @@ def main():
         logging.info('TRIO VCF: {0}'.format(options.trio))
         logging.info('SAMPLE NAME: {0}'.format(options.sample_name))
         logging.info('# Filter trio VCF')
-        filter_trio_vcf(options.trio, options.workdir, options.sample_name)
-
+        trio_filtered = filter_trio_vcf(options.trio, options.workdir, options.sample_name)
+        logging.info('# Merge rephased 10X and filtered trio VCF')
+        merge_trio_10X_vcf(options.tenx_rephased, trio_filtered, options.workdir)
 
 main()

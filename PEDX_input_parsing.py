@@ -8,8 +8,6 @@ class ToolMissingError(Exception): pass
 
 
 def check_prerequisits():
-    """ Checks if all neccessary tools are installed and have been added to
-    the PATH """
     devnull = open(os.devnull, 'w')
     try:
         run(['bcftools', '--version'], stdout=devnull, stderr=devnull, check=True)
@@ -18,9 +16,9 @@ def check_prerequisits():
     except FileNotFoundError as e:
         raise ToolMissingError('{0} was not found'.format(e.filename)) from e
     except CalledProcessError as e:
-        raise ToolMissingError('{0} has failed.'.format(' '.join(e.cmd))) from e
+        raise ToolMissingError('{0} has failed.'.format(' '.join(e.cmd))) from e     
 
-
+     
 def parse_arguments(arguments = sys.argv[1:]):
     parser = argparse.ArgumentParser(description='pedX')
 
