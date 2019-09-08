@@ -12,11 +12,14 @@ def get_filtered_phased_het_trio_variants(trio_vcf, trio_filtered_het_phased_vcf
     vcf_out = VariantFile(trio_filtered_het_phased_vcf, 'w', header=in_header)
     
     for rec in vcf_in.fetch():
+    	print(rec.chrom + ':' + str(rec.pos))
     	if rec.filter.keys()[0] == 'PASS':
     	    rec_sample = rec.samples[0]
     	    if rec_sample.phased and rec_sample['GT'][0] != rec_sample['GT'][1]:
     	        rec.samples[0].update({'PS':1})
     	        vcf_out.write(rec)
+    print('done')
+    return 0
     	        
 
 def filter_trio_vcf(trio_vcf, workdir, sample_name):
@@ -36,7 +39,7 @@ def filter_trio_vcf(trio_vcf, workdir, sample_name):
     
     logging.info(' -> Write filtered, phased and heterozygous variants to {0}'.format(trio_filtered_het_phased_vcf))
     get_filtered_phased_het_trio_variants(trio_vcf, trio_filtered_het_phased_vcf, sample_name)
-    
+    print('done')
     logging.info(' -> Compress VCF file')
     run(' '.join(command_zip), shell=True, check=True, executable='/bin/bash')
     
