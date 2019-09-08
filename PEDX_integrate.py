@@ -26,9 +26,22 @@ def filter_trio_vcf(trio_vcf, workdir, sample_name):
     command_rm = ['rm', tmp_header_vcf, tmp_variants_vcf]
 
     run(' '.join(command_get_header), shell=True, check=True, executable='/bin/bash')
+
+    f = open(tmp_header_vcf, 'r')
+    header_lines = f.readlines()
+    f.close()
+    phase_set_header_line = '##FORMAT=<ID=PS,Number=1,Type=Integer,Description="ID of Phase Set for Variant">'
+    header_lines.insert(3, phase_set_header_line)
+    f = open(tmp_header_vcf, 'w')
+    header_lines = ''.join(header_lines)
+    f.write(header_lines)
+    f.close()
+
+    """
     run(' '.join(command_modify_header), shell=True, check=True, executable='/bin/bash')
     run(' '.join(command_get_variants), shell=True, check=True, executable='/bin/bash')
     run(' '.join(command_cat_header_variants), shell=True, check=True, executable='/bin/bash')
     run(' '.join(command_zip), shell=True, check=True, executable='/bin/bash')
     run(' '.join(command_index), shell=True, check=True, executable='/bin/bash')
     run(' '.join(command_rm), shell=True, check=True, executable='/bin/bash')
+    """
