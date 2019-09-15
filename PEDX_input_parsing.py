@@ -13,6 +13,7 @@ def check_prerequisits():
         run(['bcftools', '--version'], stdout=devnull, stderr=devnull, check=True)
         run(['bgzip', '--version'], stdout=devnull, stderr=devnull, check=True)
         run(['tabix', '--version'], stdout=devnull, stderr=devnull, check=True)
+        run(['whatshap', '--version'], stdout=devnull, stderr=devnull, check=True)
     except FileNotFoundError as e:
         raise ToolMissingError('{0} was not found'.format(e.filename)) from e
     except CalledProcessError as e:
@@ -66,6 +67,18 @@ def parse_arguments(arguments = sys.argv[1:]):
     parser_integrate.add_argument('sample_name',
                                type=str,
                                help='Name of sample in VCF files.')
+                               
+    parser_cluster = subparsers.add_parser('cluster',
+                                            help='Add HP tag (1: maternal, 2: paternal) to alignments in BAM based on VCF.')
+    parser_cluster.add_argument('workdir', 
+                                 type=str,
+                                 help='Input and output directory.')
+    parser_cluster.add_argument('bam',
+                                 type=str,
+                                 help='Alignments to be tagged.')
+    parser_cluster.add_argument('vcf',
+                                 type=str,
+                                 help='Phased variants used for clustering.')
 
     parser_svhap = subparsers.add_parser('svhap',
                                            help='Phase structural variants called with SVIM.')
@@ -78,6 +91,5 @@ def parse_arguments(arguments = sys.argv[1:]):
     parser_svhap.add_argument('bam',
                                type=str,
                                help='Haplotagged long reads used to generate SV.vcf file.')
-
-
+    
     return parser.parse_args(arguments)

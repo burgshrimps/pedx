@@ -6,6 +6,8 @@ from PEDX_input_parsing import parse_arguments, check_prerequisits
 from PEDX_index import create_index_positions
 from PEDX_rephase import compare_genotypes, write_rephased_tenx_vcf, postprocess_tenx_rephased_vcf
 from PEDX_integrate import filter_trio_vcf, merge_trio_10X_vcf
+from PEDX_cluster import cluster_reads_by_hap
+from PEDX_svhap import phase_structural_variants
 
 
 def main():
@@ -61,11 +63,20 @@ def main():
         trio_filtered = filter_trio_vcf(options.trio, options.workdir, options.sample_name)
         logging.info('# Merge rephased 10X and filtered trio VCF')
         merge_trio_10X_vcf(options.tenx_rephased, trio_filtered, options.workdir)
-
+    
+    elif options.sub == 'cluster':
+        logging.info('MODE: cluster')
+        logging.info('WORKDIR: {0}'.format(options.workdir))
+        logging.info('BAM: {0}'.format(options.bam))
+        logging.info('PHASED VCF: {0}'.format(options.vcf))
+        logging.info('# Cluster alignments')
+        cluster_reads_by_hap(options.workdir, options.bam, options.vcf)
+    
     elif options.sub == 'svhap':
         logging.info('MODE: svhap')
         logging.info('WORKDIR: {0}'.format(options.workdir))
         logging.info('SV VCF: {0}'.format(options.sv))
         logging.info('LONG READS BAM: {0}'.format(options.bam))
-
+        logging.info('# Phase structural varaints')
+        phase_structural_variants(options.sv, options.bam, options.workdir)
 main()

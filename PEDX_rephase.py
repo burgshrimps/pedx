@@ -2,6 +2,7 @@ import pickle
 from pysam import VariantFile
 import os
 import logging
+from subprocess import run
 
 
 def hamming_dist(x,y):
