@@ -7,6 +7,7 @@ from PEDX_index import create_index_positions
 from PEDX_rephase import compare_genotypes, write_rephased_tenx_vcf, postprocess_tenx_rephased_vcf
 from PEDX_integrate import filter_trio_vcf, merge_trio_10X_vcf
 from PEDX_cluster import cluster_reads_by_hap
+from PEDX_svcall import call_structural_variants
 from PEDX_svhap import phase_structural_variants
 
 
@@ -63,7 +64,7 @@ def main():
         trio_filtered = filter_trio_vcf(options.trio, options.workdir, options.sample_name)
         logging.info('# Merge rephased 10X and filtered trio VCF')
         merge_trio_10X_vcf(options.tenx_rephased, trio_filtered, options.workdir)
-    
+
     elif options.sub == 'cluster':
         logging.info('MODE: cluster')
         logging.info('WORKDIR: {0}'.format(options.workdir))
@@ -71,7 +72,15 @@ def main():
         logging.info('PHASED VCF: {0}'.format(options.vcf))
         logging.info('# Cluster alignments')
         cluster_reads_by_hap(options.workdir, options.bam, options.vcf)
-    
+
+    elif options.sub == 'svcall':
+        logging.info('MODE: svcall')
+        logging.info('WORKDIR: {0}'.format(options.workdir))
+        logging.info('BAM: {0}'.format(options.bam))
+        logging.info('GENOME: {0}'.format(options.genome))
+        logging.info('# Call structural variants')
+        call_structural_variants(options.workdir, options.bam, options.genome)
+
     elif options.sub == 'svhap':
         logging.info('MODE: svhap')
         logging.info('WORKDIR: {0}'.format(options.workdir))
@@ -79,4 +88,8 @@ def main():
         logging.info('LONG READS BAM: {0}'.format(options.bam))
         logging.info('# Phase structural varaints')
         phase_structural_variants(options.sv, options.bam, options.workdir)
+
+    else:
+        print('Choose between the modes ("index", "rephase", "cluster", "svcall" or "svhap").')
+        return
 main()

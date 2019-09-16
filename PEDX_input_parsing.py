@@ -14,12 +14,14 @@ def check_prerequisits():
         run(['bgzip', '--version'], stdout=devnull, stderr=devnull, check=True)
         run(['tabix', '--version'], stdout=devnull, stderr=devnull, check=True)
         run(['whatshap', '--version'], stdout=devnull, stderr=devnull, check=True)
+        run(['svim', '--version'], stdout=devnull, stderr=devnull, check=True)
+        run(['samtools', '--version'], stdout=devnull, stderr=devnull, check=True)
     except FileNotFoundError as e:
         raise ToolMissingError('{0} was not found'.format(e.filename)) from e
     except CalledProcessError as e:
-        raise ToolMissingError('{0} has failed.'.format(' '.join(e.cmd))) from e     
+        raise ToolMissingError('{0} has failed.'.format(' '.join(e.cmd))) from e
 
-     
+
 def parse_arguments(arguments = sys.argv[1:]):
     parser = argparse.ArgumentParser(description='pedX')
 
@@ -67,10 +69,10 @@ def parse_arguments(arguments = sys.argv[1:]):
     parser_integrate.add_argument('sample_name',
                                type=str,
                                help='Name of sample in VCF files.')
-                               
+
     parser_cluster = subparsers.add_parser('cluster',
                                             help='Add HP tag (1: maternal, 2: paternal) to alignments in BAM based on VCF.')
-    parser_cluster.add_argument('workdir', 
+    parser_cluster.add_argument('workdir',
                                  type=str,
                                  help='Input and output directory.')
     parser_cluster.add_argument('bam',
@@ -79,6 +81,18 @@ def parse_arguments(arguments = sys.argv[1:]):
     parser_cluster.add_argument('vcf',
                                  type=str,
                                  help='Phased variants used for clustering.')
+
+    parser_svcall = subparsers.add_parser('svcall',
+                                           help='Call SVs with SVIM with default settings and read_names = True.')
+    parser_svcall.add_argument('workdir',
+                               type=str,
+                               help='Working and output directory.')
+    parser_svcall.add_argument('bam',
+                               type=str,
+                               help='Long read alignments for SV detection.')
+    parser_svcall.add_argument('genome',
+                               type=str,
+                               help='Genome that the reads have been aligned to.')
 
     parser_svhap = subparsers.add_parser('svhap',
                                            help='Phase structural variants called with SVIM.')
@@ -91,5 +105,5 @@ def parse_arguments(arguments = sys.argv[1:]):
     parser_svhap.add_argument('bam',
                                type=str,
                                help='Haplotagged long reads used to generate SV.vcf file.')
-    
+
     return parser.parse_args(arguments)
