@@ -86,7 +86,7 @@ def main():
         logging.info('WORKDIR: {0}'.format(options.workdir))
         logging.info('SV VCF: {0}'.format(options.sv))
         logging.info('LONG READS BAM: {0}'.format(options.bam))
-        logging.info('# Phase structural varaints')
+        logging.info('# Phase structural variants')
         phase_structural_variants(options.sv, options.bam, options.workdir)
 
     else:
