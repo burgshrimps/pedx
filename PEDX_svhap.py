@@ -17,7 +17,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
     vcf_in = VariantFile(sv_vcf)
     vcf_out = VariantFile(sv_filtered_phased_vcf, 'w', header=vcf_in.header)
     bam_in = AlignmentFile(long_reads_bam)
-    phasing_stat_f = open(workdir + '/' + 'phasing_stat.txt')
+    phasing_stat_f = open(workdir + '/' + 'phasing_stat.txt', 'w')
 
     
     chr_to_include = ['1',
