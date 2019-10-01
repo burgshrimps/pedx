@@ -49,7 +49,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       'chr2',
                       'chr3',
                       'chr4',
-                      'chr5'
+                      'chr5',
                       'chr6',
                       'chr7',
                       'chr8',
@@ -69,12 +69,14 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       'chr22',
                       'chrX',
                       'chrY']
+
     phasing_stat = {'INS' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DEL' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'INV' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'BND' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DUP:TANDEM' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DUP_INT' : {'Total':0, 'Phased HOM':0, 'Phased HET':0}}
+                    
     prev_chrom = ''
     for rec in vcf_in.fetch():
         sv_chrom = rec.chrom
