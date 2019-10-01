@@ -18,7 +18,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
     vcf_out = VariantFile(sv_filtered_phased_vcf, 'w', header=vcf_in.header)
     bam_in = AlignmentFile(long_reads_bam)
 
-    """
+    
     chr_to_include = ['1',
                       '2',
                       '3',
@@ -43,8 +43,8 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       '22',
                       'X',
                       'Y']
+    
     """
-
     chr_to_include = ['chr1',
                       'chr2',
                       'chr3',
@@ -69,6 +69,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       'chr22',
                       'chrX',
                       'chrY']
+    """
 
     phasing_stat = {'INS' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DEL' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
