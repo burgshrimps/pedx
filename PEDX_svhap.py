@@ -69,16 +69,19 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       'chr22',
                       'chrX',
                       'chrY']
-    phasing_stat = {'INS' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
-                    'DEL' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
-                    'INV' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
-                    'BND' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
-                    'DUP:TANDEM' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
-                    'DUP_INT' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0}}
-
+    phasing_stat = {'# INS' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
+                    '# DEL' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
+                    '# INV' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
+                    '# BND' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
+                    '# DUP:TANDEM' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
+                    '# DUP_INT' : {'Total':0, 'Phased HOM':0, 'Phased HET':0}}
+    prev_chrom = ''
     for rec in vcf_in.fetch():
         sv_chrom = rec.chrom
         if sv_chrom in chr_to_include:
+            if sv_chrom != prev_chrom:
+                logging.info('Processing {0}'.format(sv_chrom.chrom))
+            prev_chrom = sv_chrom
             if rec.filter.keys()[0] == 'PASS':
                 sv_pos = rec.pos
                 sv_read_ids = rec.info['READS']
@@ -92,7 +95,6 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                     end_pos = rec.info['END']
                 else:
                     end_pos = sv_pos
-                print(sv_chrom, begin_pos, end_pos)
 
                 hap1_counter = 0
                 hap2_counter = 0
@@ -129,6 +131,6 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                         phasing_stat[sv_type]['Phased HET'] += 1
 
                     vcf_out.write(rec)
-                    
+
     for sv in phasing_stat:
         print('{0}: {1}'.format(sv, phasing_stat[sv]))
