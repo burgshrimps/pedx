@@ -80,7 +80,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
         sv_chrom = rec.chrom
         if sv_chrom in chr_to_include:
             if sv_chrom != prev_chrom:
-                logging.info('Processing {0}'.format(sv_chrom.chrom))
+                logging.info('Processing {0}'.format(sv_chrom))
             prev_chrom = sv_chrom
             if rec.filter.keys()[0] == 'PASS':
                 sv_pos = rec.pos
