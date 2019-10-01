@@ -23,7 +23,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       '2',
                       '3',
                       '4',
-                      '5'
+                      '5',
                       '6',
                       '7',
                       '8',
@@ -76,7 +76,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                     'BND' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DUP:TANDEM' : {'Total':0, 'Phased HOM':0, 'Phased HET':0},
                     'DUP_INT' : {'Total':0, 'Phased HOM':0, 'Phased HET':0}}
-                    
+
     prev_chrom = ''
     for rec in vcf_in.fetch():
         sv_chrom = rec.chrom
@@ -134,5 +134,6 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
 
                     vcf_out.write(rec)
     print('')
+    print('\tTotal\tPhased HOM\tPhased HET')
     for sv in phasing_stat:
-        print('# {0}: {1}'.format(sv, phasing_stat[sv]))
+        print('# {0}:\t{1}\t{2}\t{3}'.format(sv, phasing_stat[sv]['Total'], phasing_stat[sv]['Phased HOM'], phasing_stat[sv]['Phased HET']))
