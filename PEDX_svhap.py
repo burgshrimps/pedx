@@ -129,4 +129,6 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                         phasing_stat[sv_type]['Phased HET'] += 1
 
                     vcf_out.write(rec)
-    print(phasing_stat)
+                    
+    for sv in phasing_stat:
+        print('{0}: {1}'.format(sv, phasing_stat[sv]))
