@@ -88,7 +88,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                 sv_support = rec.info['SUPPORT']
                 sv_type = rec.info['SVTYPE']
 
-                phasing_stat[sv_type]['Unphased'] += 1
+                phasing_stat[sv_type]['Total'] += 1
 
                 begin_pos = sv_pos - 1
                 if 'END' in rec.info:
