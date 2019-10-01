@@ -17,6 +17,7 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
     vcf_in = VariantFile(sv_vcf)
     vcf_out = VariantFile(sv_filtered_phased_vcf, 'w', header=vcf_in.header)
     bam_in = AlignmentFile(long_reads_bam)
+    phasing_stat_f = open(workdir + '/' + 'phasing_stat.txt')
 
     
     chr_to_include = ['1',
@@ -134,7 +135,8 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                         phasing_stat[sv_type]['Phased HET'] += 1
 
                     vcf_out.write(rec)
-    print('')
-    print('\tTotal\tPhased HOM\tPhased HET')
+    
+    phasing_stat_f.write('\tTotal\tPhased HOM\tPhased HET\n')
     for sv in phasing_stat:
-        print('# {0}:\t{1}\t{2}\t{3}'.format(sv, phasing_stat[sv]['Total'], phasing_stat[sv]['Phased HOM'], phasing_stat[sv]['Phased HET']))
+        phasing_stat_f.write('{0}:\t{1}\t{2}\t{3}\n'.format(sv, phasing_stat[sv]['Total'], phasing_stat[sv]['Phased HOM'], phasing_stat[sv]['Phased HET']))
+    phasing_stat_f.close()
