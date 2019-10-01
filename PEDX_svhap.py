@@ -12,11 +12,13 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
         offset = -7
     else:
         return
+
     sv_filtered_phased_vcf = workdir + '/' + sv_vcf_basename[:offset] + '.filtered.phased.vcf'
     vcf_in = VariantFile(sv_vcf)
     vcf_out = VariantFile(sv_filtered_phased_vcf, 'w', header=vcf_in.header)
     bam_in = AlignmentFile(long_reads_bam)
 
+    """
     chr_to_include = ['1',
                       '2',
                       '3',
@@ -41,16 +43,49 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                       '22',
                       'X',
                       'Y']
+    """
 
-    num_phased_svs = 0
+    chr_to_include = ['chr1',
+                      'chr2',
+                      'chr3',
+                      'chr4',
+                      'chr5'
+                      'chr6',
+                      'chr7',
+                      'chr8',
+                      'chr9',
+                      'chr10',
+                      'chr11',
+                      'chr12',
+                      'chr13',
+                      'chr14',
+                      'chr15',
+                      'chr16',
+                      'chr17',
+                      'chr18',
+                      'chr19',
+                      'chr20',
+                      'chr21',
+                      'chr22',
+                      'chrX',
+                      'chrY']
+    phasing_stat = {'INS' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
+                    'DEL' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
+                    'INV' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
+                    'BND' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
+                    'DUP:TANDEM' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0},
+                    'DUP_INT' : {'Unphased':0, 'Phased HOM':0, 'Phased HET':0}}
+
     for rec in vcf_in.fetch():
         sv_chrom = rec.chrom
         if sv_chrom in chr_to_include:
             if rec.filter.keys()[0] == 'PASS':
-                rec_sample = rec.samples[0]
                 sv_pos = rec.pos
                 sv_read_ids = rec.info['READS']
                 sv_support = rec.info['SUPPORT']
+                sv_type = rec.info['SVTYPE']
+
+                phasing_stat[sv_type]['Unphased'] += 1
 
                 begin_pos = sv_pos - 1
                 if 'END' in rec.info:
@@ -61,7 +96,11 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
 
                 hap1_counter = 0
                 hap2_counter = 0
-                for read in bam_in.fetch(sv_chrom, begin_pos, end_pos):
+                try:
+                    read_iterator = bam_in.fetch(sv_chrom, begin_pos-2000, end_pos+2000)
+                except ValueError:
+                    read_iterator = bam_in.fetch(sv_chrom, begin_pos, end_pos)
+                for read in read_iterator:
                     if read.query_name in sv_read_ids:
                         if read.has_tag('HP'):
                             read_hp = read.get_tag('HP')
@@ -79,11 +118,15 @@ def phase_structural_variants(sv_vcf, long_reads_bam, workdir):
                     if allele_frequency_hap1 >= threshold_hom and allele_frequency_hap1 < threshold_het:
                         rec.samples[0]['GT'] = (1, 1)
                         rec.samples[0].phased = True
+                        phasing_stat[sv_type]['Phased HOM'] += 1
                     elif allele_frequency_hap1 >= threshold_het:
                         rec.samples[0]['GT'] = (1, 0)
                         rec.samples[0].phased = True
+                        phasing_stat[sv_type]['Phased HET'] += 1
                     elif allele_frequency_hap2 >= threshold_het:
                         rec.samples[0]['GT'] = (0, 1)
                         rec.samples[0].phased = True
+                        phasing_stat[sv_type]['Phased HET'] += 1
 
                     vcf_out.write(rec)
+    print(phasing_stat)
