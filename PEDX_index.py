@@ -15,8 +15,8 @@ class PhaseSet:
         self.length_bp = 0
         self.length_var = 0
         self.trio_overlap = 0
-        self.hd_1 = 0
-        self.hd_2 = 0
+        self.matTOhap1_patTOhap2 = 0
+        self.matTOhap2_patTOhap1 = 0
         self.log2ratio = 0
         self.rephased = False
 
@@ -26,7 +26,7 @@ class PhaseSet:
         self.length_var = len(self.positions)
 
     def set_log2ratio(self):
-        self.log2ratio = np.log2(self.hd_1 / float(self.hd_2))
+        self.log2ratio = np.log2(self.matTOhap1_patTOhap2 / float(self.matTOhap2_patTOhap1))
 
 
 def create_index_positions(filename, create_indexed_phase_sets=False):
